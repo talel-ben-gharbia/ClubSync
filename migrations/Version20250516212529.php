@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250427171911 extends AbstractMigration
+final class Version20250516212529 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,7 +21,7 @@ final class Version20250427171911 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE club ADD description LONGTEXT NOT NULL
+            ALTER TABLE event CHANGE subscriber subscriber JSON DEFAULT NULL COMMENT '(DC2Type:json)'
         SQL);
     }
 
@@ -29,7 +29,7 @@ final class Version20250427171911 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE club DROP description
+            ALTER TABLE event CHANGE subscriber subscriber JSON NOT NULL COMMENT '(DC2Type:json)'
         SQL);
     }
 }

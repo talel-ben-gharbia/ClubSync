@@ -11,8 +11,26 @@
 			</div>
 
 			<div class="col-md-7 d-flex align-items-center justify-content-center">
-				<div
-						class="w-100" style="max-width: 450px;">
+				<div class="w-100" style="max-width: 450px;">
+					{% for label, messages in app.flashes %}
+						{% for message in messages %}
+							<div class="alert alert-{{ label }} alert-dismissible fade show mb-4" role="alert">
+								<div class="d-flex align-items-center">
+									{% if label == 'success' %}
+										<i class="bi bi-check-circle-fill me-2"></i>
+									{% elseif label == 'danger' %}
+										<i class="bi bi-exclamation-triangle-fill me-2"></i>
+									{% elseif label == 'warning' %}
+										<i class="bi bi-exclamation-circle-fill me-2"></i>
+									{% else %}
+										<i class="bi bi-info-circle-fill me-2"></i>
+									{% endif %}
+									<dziv>{{ message }}</div>
+								</div>
+								<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+							</div>
+						{% endfor %}
+					{% endfor %}
 					<!-- Header -->
 					<div class="mb-4 position-relative">
 						<h2 class="text-dark mb-1">Welcome</h2>

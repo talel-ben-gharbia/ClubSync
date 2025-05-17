@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Member
+{% endblock %}
+
+{% block body %}
+	<div class="container-fluid">
+		<div class="row">
+			{% include "DashNavbar.html.twig" %}
+
+			<main class="col-12 col-md-9 col-lg-10 p-4">
+				<div class="d-flex justify-content-between align-items-center mb-4">
+					<h1>Edit Member</h1>
+					<a href="{{ path('app_member_index') }}" class="btn btn-outline-secondary">
+						<i class="bi bi-arrow-left-circle me-2"></i>
+						Back to list
+					</a>
+				</div>
+
+				<div class="card border-0 shadow-sm rounded-3 p-4">
+					{{ form_start(form, {'attr': {'class': 'row g-3'}}) }}
+
+					<div class="col-md-6">
+						{{ form_label(form.username, null, {'label_attr': {'class': 'form-label'}}) }}
+						{{ form_widget(form.username, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.username) }}
+					</div>
+
+
+					<div class="col-md-6">
+						{{ form_label(form.clubRole, null, {'label_attr': {'class': 'form-label'}}) }}
+						{{ form_widget(form.clubRole, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.clubRole) }}
+					</div>
+
+					<div class="col-md-6">
+						{{ form_label(form.joinAt, null, {'label_attr': {'class': 'form-label'}}) }}
+						{{ form_widget(form.joinAt, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.joinAt) }}
+					</div>
+
+					<div class="col-md-6">
+						{{ form_label(form.club, null, {'label_attr': {'class': 'form-label'}}) }}
+						{{ form_widget(form.club, {'attr': {'class': 'form-select'}}) }}
+						{{ form_errors(form.club) }}
+					</div>
+
+					<div class="col-12 mt-4">
+						<button class="btn btn-primary" type="submit">
+							<i class="bi bi-save me-2"></i>
+							{{ button_label|default('Save') }}
+						</button>
+					</div>
+
+					{{ form_end(form) }}
+				</div>
+			</main>
+		</div>
+	</div>
+{% endblock %}
