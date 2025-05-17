@@ -1,20 +1,374 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Event Details{% endblock %}
+{% block title %}{{ event.name }} - Event Details{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    /* Custom styling */
+    :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+        --accent-color: #4895ef;
+        --light-bg: #f8f9fa;
+        --dark-text: #212529;
+        --light-text: #6c757d;
+        --border-color: #e9ecef;
+        --success-color: #2ecc71;
+    }
+    
+    .page-header {
+        background-color: var(--light-bg);
+        padding: 3rem 0;
+        margin-bottom: 3rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(67, 97, 238, 0.05) 0%, rgba(72, 149, 239, 0.1) 100%);
+        z-index: 0;
+    }
+    
+    .page-header .container {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .event-title {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--dark-text);
+    }
+    
+    .event-status {
+        display: inline-block;
+        padding: 0.35rem 0.75rem;
+        border-radius: 6px;
+        font-weight: 500;
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+    }
+    
+    .status-upcoming {
+        background-color: var(--primary-color);
+        color: white;
+    }
+    
+    .status-ongoing {
+        background-color: var(--success-color);
+        color: white;
+    }
+    
+    .status-completed {
+        background-color: var(--light-text);
+        color: white;
+    }
+    
+    .status-cancelled {
+        background-color: #e74c3c;
+        color: white;
+    }
+    
+    .event-details-card {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 2rem;
+    }
+    
+    .event-image-container {
+        position: relative;
+        height: 350px;
+        overflow: hidden;
+    }
+    
+    .event-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .event-image-container:hover .event-image {
+        transform: scale(1.03);
+    }
+    
+    .event-image-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+        padding: 2rem;
+        color: white;
+    }
+    
+    .event-meta-card {
+        border: none;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        height: 100%;
+    }
+    
+    .event-meta-header {
+        background-color: var(--light-bg);
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .event-meta-body {
+        padding: 1.5rem;
+    }
+    
+    .event-meta-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1.25rem;
+    }
+    
+    .event-meta-item:last-child {
+        margin-bottom: 0;
+    }
+    
+    .event-meta-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        background-color: rgba(67, 97, 238, 0.1);
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+    
+    .event-meta-content {
+        flex-grow: 1;
+    }
+    
+    .event-meta-label {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        color: var(--dark-text);
+    }
+    
+    .event-meta-value {
+        color: var(--light-text);
+    }
+    
+    .event-description {
+        line-height: 1.8;
+        color: var(--light-text);
+    }
+    
+    .btn-custom {
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-custom:hover {
+        transform: translateY(-2px);
+    }
+    
+    .btn-primary-custom {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    
+    .btn-primary-custom:hover {
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+    }
+    
+    .btn-secondary-custom {
+        background-color: var(--light-bg);
+        border-color: var(--border-color);
+        color: var(--dark-text);
+    }
+    
+    .btn-secondary-custom:hover {
+        background-color: var(--border-color);
+    }
+    
+    .event-club-info {
+        display: flex;
+        align-items: center;
+        margin-top: 1rem;
+    }
+    
+    .event-club-logo {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 1rem;
+        border: 2px solid white;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .event-club-name {
+        font-weight: 600;
+        color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .event-image-container {
+            height: 250px;
+        }
+        
+        .event-image-overlay {
+            padding: 1.5rem;
+        }
+        
+        .event-meta-card {
+            margin-top: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block body %}
     {% include "Navbar.html.twig" %}
 
-    <div class="container py-5">
-        <h1>{{ event.name }}</h1>
-        <p>{{ event.description }}</p>
-        <p>Start: {{ event.startDate ? event.startDate|date('Y-m-d') : '' }} {{ event.startTime ? event.startTime|date('H:i') : '' }}</p>
-        <p>End: {{ event.endDate ? event.endDate|date('Y-m-d') : '' }} {{ event.endTime ? event.endTime|date('H:i') : '' }}</p>
-        <p>Location: {{ event.location }}</p>
-        <p>Status: {{ event.status }}</p>
-        {% if event.image %}
-            <img src="{{ asset('uploads/' ~ event.image) }}" alt="Event Image" style="max-width: 300px;" />
-        {% endif %}
-        <a href="{{ path('app_club_show_details', {'id': event.club.id}) }}" class="btn btn-secondary mt-3">Back to Club</a>
+    <div class="event-details-card">
+        <div class="event-image-container">
+            {% if event.image %}
+                <img src="{{ asset('uploads/' ~ event.image) }}" alt="{{ event.name }}" class="event-image" />
+            {% else %}
+                <img src="{{ asset('images/event-placeholder.jpg') }}" alt="{{ event.name }}" class="event-image" />
+            {% endif %}
+            <div class="event-image-overlay">
+                <span class="event-status status-{{ event.status|lower }}">{{ event.status }}</span>
+                <h1 class="event-title h2">{{ event.name }}</h1>
+                
+                <div class="event-club-info">
+                    {% if event.club.image is defined and event.club.image %}
+                        <img src="{{ asset('uploads/' ~ event.club.image) }}" alt="{{ event.club.name }}" class="event-club-logo" />
+                    {% else %}
+                        <div class="event-meta-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                    {% endif %}
+                    <div class="event-club-name">Organized by {{ event.club.name }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container pb-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <h2 class="h4 mb-4">About This Event</h2>
+                <div class="event-description mb-5">
+                    {{ event.description|nl2br }}
+                </div>
+                
+                <div class="d-flex gap-3 mt-4">
+                    <a href="{{ path('app_club_show_details', {'id': event.club.id}) }}" class="btn btn-secondary-custom btn-custom">
+                        <i class="bi bi-arrow-left me-2"></i> Back to Club
+                    </a>
+                    
+                    {% if app.user %}
+                        <a href="{{ path('event_subscribe', {'id': event.id}) }}" class="btn btn-primary-custom btn-custom">
+                            <i class="bi bi-calendar-check me-2"></i> Subscribe to Event
+                        </a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn btn-primary-custom btn-custom">
+                            <i class="bi bi-box-arrow-in-right me-2"></i> Login to Subscribe
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="event-meta-card">
+                    <div class="event-meta-header">
+                        <h3 class="h5 mb-0">Event Details</h3>
+                    </div>
+                    <div class="event-meta-body">
+                        <div class="event-meta-item">
+                            <div class="event-meta-icon">
+                                <i class="bi bi-calendar-event"></i>
+                            </div>
+                            <div class="event-meta-content">
+                                <div class="event-meta-label">Date</div>
+                                <div class="event-meta-value">
+                                    {% if event.startDate == event.endDate or not event.endDate %}
+                                        {{ event.startDate ? event.startDate|date('F d, Y') : 'TBA' }}
+                                    {% else %}
+                                        {{ event.startDate ? event.startDate|date('F d, Y') : '' }} - {{ event.endDate ? event.endDate|date('F d, Y') : '' }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="event-meta-item">
+                            <div class="event-meta-icon">
+                                <i class="bi bi-clock"></i>
+                            </div>
+                            <div class="event-meta-content">
+                                <div class="event-meta-label">Time</div>
+                                <div class="event-meta-value">
+                                    {% if event.startTime %}
+                                        {{ event.startTime|date('g:i A') }}
+                                        {% if event.endTime %} - {{ event.endTime|date('g:i A') }}{% endif %}
+                                    {% else %}
+                                        TBA
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="event-meta-item">
+                            <div class="event-meta-icon">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
+                            <div class="event-meta-content">
+                                <div class="event-meta-label">Location</div>
+                                <div class="event-meta-value">{{ event.location }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="event-meta-item">
+                            <div class="event-meta-icon">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <div class="event-meta-content">
+                                <div class="event-meta-label">Organized by</div>
+                                <div class="event-meta-value">
+                                    <a href="{{ path('app_club_show_details', {'id': event.club.id}) }}" class="text-decoration-none">
+                                        {{ event.club.name }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if event.subscriber is defined %}
+                            <div class="event-meta-item">
+                                <div class="event-meta-icon">
+                                    <i class="bi bi-person-check"></i>
+                                </div>
+                                <div class="event-meta-content">
+                                    <div class="event-meta-label">Attendees</div>
+                                    <div class="event-meta-value">{{ event.subscriber|length }} people attending</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

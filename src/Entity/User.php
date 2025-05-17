@@ -10,7 +10,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ORM\InheritanceType("JOINED")]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[ORM\DiscriminatorMap([
+    "user" => User::class,
+    "member" => Member::class
+])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -35,6 +40,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     private ?string $username = null;
+
+
+
+
+
 
     public function getId(): ?int
     {
@@ -121,5 +131,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->username = $username;
 
         return $this;
+    }
+
+    // src/Entity/User.php
+    public function isManager(): bool
+    {
+        return false; // Default for non-Member users
     }
 }

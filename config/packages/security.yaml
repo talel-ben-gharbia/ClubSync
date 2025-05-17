@@ -46,6 +46,8 @@ security:
         - { path: ^/user, roles: ROLE_USER }
         - { path: ^/clubs, roles: PUBLIC_ACCESS  }
         - { path: ^/event, roles: PUBLIC_ACCESS }
+        - { path: ^/event/\d+/subscribe, roles: ROLE_USER }
+
 
 
 

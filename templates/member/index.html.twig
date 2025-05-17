@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Member index
+{% endblock %}
+
+{% block body %}
+	<div class="container-fluid">
+		<div class="row">
+			{% include "DashNavbar.html.twig" %}
+			<main class="col-12 col-md-9 col-lg-10 p-4">
+				<div class="d-flex justify-content-between align-items-center mb-4">
+					<h1>Members Management</h1>
+					<div class="d-flex gap-3 align-items-center">
+						<form method="get" action="{{ path('app_member_index') }}" class="input-group" style="width: 300px;">
+							<input type="text" name="search" class="form-control" placeholder="Search members..." value="{{ app.request.get('search') }}">
+							<button class="btn btn-outline-secondary" type="submit">
+								<i class="bi bi-search"></i>
+							</button>
+						</form>
+
+						<select class="form-select" style="width: 120px;">
+							<option>Filter</option>
+						</select>
+
+					</div>
+				</div>
+
+				<div class="card border-0 shadow-sm rounded-3">
+					<div class="table-responsive">
+						<table class="table align-middle mb-0">
+							<thead class="bg-light text-secondary">
+								<tr>
+									<th>ID</th>
+									<th>Email</th>
+									<th>Username</th>
+									<th>Club Role</th>
+									<th>Join Date</th>
+									<th class="text-center">Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for member in members %}
+									<tr>
+										<td class="fw-bold text-muted">#{{ member.id }}</td>
+										<td class="fw-semibold">{{ member.email }}</td>
+										<td>{{ member.username }}</td>
+										<td>
+											{% if member.clubRole == 'manager' %}
+												<span class="badge bg-success text-white">Manager</span>
+											{% elseif member.clubRole == 'member' %}
+												<span class="badge bg-light text-dark">Member</span>
+											{% else %}
+												<span class="badge bg-secondary text-white">{{ member.clubRole }}</span>
+											{% endif %}
+										</td>
+
+										<td>{{ member.joinAt ? member.joinAt|date('Y-m-d') : '' }}</td>
+										<td class="text-center">
+											<a href="{{ path('app_member_edit', {'id': member.id}) }}" class="text-decoration-none">
+												<i class="bi bi-pen pe-2 text-secondary"></i>
+											</a>
+											<form method="post" action="{{ path('app_member_delete', {'id': member.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');" style="display: inline;">
+												<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ member.id) }}">
+												<button type="submit" class="btn p-0 border-0 bg-transparent">
+													<i class="bi bi-trash pe-2 text-secondary"></i>
+												</button>
+											</form>
+										</td>
+									</tr>
+								{% else %}
+									<tr>
+										<td colspan="7" class="text-center py-4">No members found.</td>
+									</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div class="d-flex justify-content-between align-items-center mt-4">
+					<span class="text-secondary"></span>
+					<div class="btn-group">
+						<button class="btn btn-outline-secondary btn-sm">Previous</button>
+						<button class="btn btn-primary btn-sm">1</button>
+						<button class="btn btn-outline-secondary btn-sm">Next</button>
+					</div>
+				</div>
+			</main>
+		</div>
+	</div>
+{% endblock %}

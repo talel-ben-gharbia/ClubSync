@@ -1,40 +1,157 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Admin Dashboard{% endblock %}
+{% block title %}Tableau de bord{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<style>
+		.chart-container {
+			width: 100%;
+			height: 400px;
+			margin-bottom: 30px;
+			border: 1px solid #e0e0e0;
+			border-radius: 10px;
+			padding: 15px;
+			background: white;
+			box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+		}
+		.stat-card {
+			border-radius: 10px;
+			padding: 20px;
+			margin-bottom: 20px;
+			color: white;
+			text-align: center;
+			box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+			transition: transform 0.2s ease-in-out;
+		}
+		.stat-card:hover {
+			transform: translateY(-5px);
+		}
+		.stat-card h3 {
+			font-size: 1.5rem;
+			margin-bottom: 10px;
+		}
+		.stat-card p {
+			font-size: 2.5rem;
+			font-weight: bold;
+			margin: 0;
+		}
+	</style>
+{% endblock %}
 
 {% block body %}
 	<div class="container-fluid">
 		<div class="row">
-			<nav class="sidebar col-12 col-md-3 col-lg-2 p-3" style="background-color: #EEF2FF; height:100vh;">
-				<div class="sidebar-logo mb-4 px-3"><a  href="{{ path('app_home') }}">ClubSync</a></div>
-				<ul class="nav flex-column">
-					<li class="nav-item">
-						<a class="nav-link text-secondary" href="{{ path('app_dashboard') }}">
-							<i class="bi bi-house pe-2 fs-5"></i> Dashboard
-						</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link text-secondary" href="{{ path('app_club_index') }}">
-							<i class="bi bi-collection pe-2 fs-5"></i> Clubs
-						</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link text-secondary" href="{{ path('app_event_index') }}">
-							<i class="bi bi-calendar-event pe-2 fs-5"></i> Events
-						</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link text-secondary" href="#">
-							<i class="bi bi-gear pe-2 fs-5"></i> Settings
-						</a>
-					</li>
-
-				</ul>
-			</nav>
+			{% include "DashNavbar.html.twig" %}
 			<main class="col-12 col-md-9 col-lg-10 p-4">
-				<h1>Admin Dashboard</h1>
-				<p>Welcome to the admin dashboard. Use the sidebar to manage clubs and events.</p>
+				<div class="card mb-4">
+					<div class="card-body">
+						<h1 class="card-title">Tableau de bord</h1>
+						<p class="card-text">Bienvenue dans le tableau de bord admin. Utilisez la barre latérale pour gérer les clubs et événements.</p>
+					</div>
+				</div>
+
+				<div class="row mb-4">
+					<div class="col-md-4">
+						<div class="stat-card bg-primary">
+							<h3>Clubs</h3>
+							<p>{{ totalClubs }}</p>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="stat-card bg-success">
+							<h3>Événements</h3>
+							<p>{{ totalEvents }}</p>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="stat-card bg-info">
+							<h3>Membres</h3>
+							<p>{{ totalMembers }}</p>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-6">
+						<div class="chart-container">
+							<h3>Statut des clubs</h3>
+							<div id="clubStatusChart"></div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="chart-container">
+							<h3>Statut des événements</h3>
+							<div id="eventStatusChart"></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="chart-container">
+							<h3>Clubs les plus populaires</h3>
+							<div id="popularClubsChart"></div>
+						</div>
+					</div>
+				</div>
 			</main>
 		</div>
 	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript">
+		google.charts.load('current', {'packages':['corechart']});
+		google.charts.setOnLoadCallback(drawCharts);
+
+		function drawCharts() {
+			var clubStatusData = google.visualization.arrayToDataTable({{ clubStatusData|raw }});
+			var eventStatusData = google.visualization.arrayToDataTable({{ eventStatusData|raw }});
+			var popularClubsData = google.visualization.arrayToDataTable({{ popularClubsData|raw }});
+
+			var clubStatusOptions = {
+				title: 'Répartition des clubs',
+				pieHole: 0.4,
+				colors: ['#28a745', '#dc3545'],
+				animation: { duration: 1000, easing: 'out', startup: true },
+				titleTextStyle: { color: '#333', fontSize: 18, bold: true }
+			};
+
+			var eventStatusOptions = {
+				title: 'Statut des événements',
+				pieHole: 0.4,
+				colors: ['#17a2b8', '#ffc107', '#6c757d'],
+				animation: { duration: 1000, easing: 'out', startup: true },
+				titleTextStyle: { color: '#333', fontSize: 18, bold: true }
+			};
+
+			var popularClubsOptions = {
+				title: 'Top 5 des clubs',
+				legend: { position: 'none' },
+				colors: ['#007bff'],
+				hAxis: { title: 'Clubs' },
+				vAxis: { title: 'Nombre de membres' },
+				animation: { duration: 1000, easing: 'out', startup: true },
+				titleTextStyle: { color: '#333', fontSize: 18, bold: true }
+			};
+
+			var clubStatusChart = new google.visualization.PieChart(document.getElementById('clubStatusChart'));
+			clubStatusChart.draw(clubStatusData, clubStatusOptions);
+
+			var eventStatusChart = new google.visualization.PieChart(document.getElementById('eventStatusChart'));
+			eventStatusChart.draw(eventStatusData, eventStatusOptions);
+
+			var popularClubsChart = new google.visualization.ColumnChart(document.getElementById('popularClubsChart'));
+			popularClubsChart.draw(popularClubsData, popularClubsOptions);
+
+			window.addEventListener('resize', function () {
+				clubStatusChart.draw(clubStatusData, clubStatusOptions);
+				eventStatusChart.draw(eventStatusData, eventStatusOptions);
+				popularClubsChart.draw(popularClubsData, popularClubsOptions);
+			});
+		}
+	</script>
 {% endblock %}

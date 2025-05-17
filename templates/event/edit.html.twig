@@ -1,99 +1,76 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Event{% endblock %}
+{% block title %}Edit Event
+{% endblock %}
 
 {% block body %}
-    <div class="container-fluid">
-        <div class="row">
-            <nav class="sidebar col-12 col-md-3 col-lg-2 p-3" style="background-color: #EEF2FF; height:100vh;">
-                <div class="sidebar-logo mb-4 px-3">ClubHub</div>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link text-secondary" href="{{ path('app_dashboard') }}">
-                            <i class="bi bi-house pe-2 fs-5"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-secondary" href="{{ path('app_club_index') }}">
-                            <i class="bi bi-collection pe-2 fs-5"></i> Clubs
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_event' ? 'bg-light text-primary border-end border-primary' : 'text-secondary' }}" href="{{ path('app_event_index') }}">
-                            <i class="bi bi-calendar-event pe-2 fs-5"></i> Events
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-secondary" href="#">
-                            <i class="bi bi-gear pe-2 fs-5"></i> Settings
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <main class="col-12 col-md-9 col-lg-10 p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1>Edit Event</h1>
-                </div>
-                <hr>
-                {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
-                <div class="card p-4 shadow-sm rounded-3">
-                    <div class="mb-3">
-                        {{ form_label(form.name) }}
-                        {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
-                        {{ form_errors(form.name) }}
-                    </div>
-                    <div class="mb-3">
-                        {{ form_label(form.description) }}
-                        {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
-                        {{ form_errors(form.description) }}
-                    </div>
-                    <div class="mb-3">
-                        {{ form_label(form.startDate) }}
-                        {{ form_widget(form.startDate, {'attr': {'class': 'form-control'}}) }}
-                        {{ form_errors(form.startDate) }}
-                    </div>
-                    <div class="mb-3">
-                        {{ form_label(form.startTime) }}
-                        {{ form_widget(form.startTime, {'attr': {'class': 'form-control'}}) }}
-                        {{ form_errors(form.startTime) }}
-                    </div>
-                    <div class="mb-3">
-                        {{ form_label(form.endDate) }}
-                        {{ form_widget(form.endDate, {'attr': {'class': 'form-control'}}) }}
-                        {{ form_errors(form.endDate) }}
-                    </div>
-                    <div class="mb-3">
-                        {{ form_label(form.endTime) }}
-                        {{ form_widget(form.endTime, {'attr': {'class': 'form-control'}}) }}
-                        {{ form_errors(form.endTime) }}
-                    </div>
-                    <div class="mb-3">
-                        {{ form_label(form.location) }}
-                        {{ form_widget(form.location, {'attr': {'class': 'form-control'}}) }}
-                        {{ form_errors(form.location) }}
-                    </div>
-                    <div class="mb-3">
-                        {{ form_label(form.status) }}
-                        {{ form_widget(form.status, {'attr': {'class': 'form-select'}}) }}
-                        {{ form_errors(form.status) }}
-                    </div>
-                    <div class="mb-3">
-                        {{ form_label(form.image) }}
-                        {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
-                        {{ form_errors(form.image) }}
-                    </div>
-                    <div class="mb-3">
-                        {{ form_label(form.club) }}
-                        {{ form_widget(form.club, {'attr': {'class': 'form-select'}}) }}
-                        {{ form_errors(form.club) }}
-                    </div>
-                    <div class="d-flex justify-content-end">
-                        <a href="{{ path('app_event_index') }}" class="btn btn-outline-secondary me-3">Back to list</a>
-                        <button class="btn btn-primary">Save Changes</button>
-                    </div>
-                </div>
-                {{ form_end(form) }}
-            </main>
-        </div>
-    </div>
+	<div class="container-fluid">
+		<div class="row">
+			{% include "DashNavbar.html.twig" %}
+			<main class="col-12 col-md-9 col-lg-10 p-4">
+				<div class="d-flex justify-content-between align-items-center mb-4">
+					<h1>Edit Event</h1>
+				</div>
+				<hr>
+				{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+				<div class="card p-4 shadow-sm rounded-3">
+					<div class="mb-3">
+						{{ form_label(form.name) }}
+						{{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.name) }}
+					</div>
+					<div class="mb-3">
+						{{ form_label(form.description) }}
+						{{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.description) }}
+					</div>
+					<div class="mb-3">
+						{{ form_label(form.startDate) }}
+						{{ form_widget(form.startDate, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.startDate) }}
+					</div>
+					<div class="mb-3">
+						{{ form_label(form.startTime) }}
+						{{ form_widget(form.startTime, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.startTime) }}
+					</div>
+					<div class="mb-3">
+						{{ form_label(form.endDate) }}
+						{{ form_widget(form.endDate, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.endDate) }}
+					</div>
+					<div class="mb-3">
+						{{ form_label(form.endTime) }}
+						{{ form_widget(form.endTime, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.endTime) }}
+					</div>
+					<div class="mb-3">
+						{{ form_label(form.location) }}
+						{{ form_widget(form.location, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.location) }}
+					</div>
+					<div class="mb-3">
+						{{ form_label(form.status) }}
+						{{ form_widget(form.status, {'attr': {'class': 'form-select'}}) }}
+						{{ form_errors(form.status) }}
+					</div>
+					<div class="mb-3">
+						{{ form_label(form.image) }}
+						{{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.image) }}
+					</div>
+					<div class="mb-3">
+						{{ form_label(form.club) }}
+						{{ form_widget(form.club, {'attr': {'class': 'form-select'}}) }}
+						{{ form_errors(form.club) }}
+					</div>
+					<div class="d-flex justify-content-end">
+						<a href="{{ path('app_event_index') }}" class="btn btn-outline-secondary me-3">Back to list</a>
+						<button class="btn btn-primary">Save Changes</button>
+					</div>
+				</div>
+				{{ form_end(form) }}
+			</main>
+		</div>
+	</div>
 {% endblock %}
