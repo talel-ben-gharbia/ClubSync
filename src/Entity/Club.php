@@ -42,9 +42,21 @@ class Club
     #[ORM\OneToMany(mappedBy: 'club', targetEntity: Event::class)]
     private Collection $events;
 
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $joinRequest = null;
+
+    /**
+     * @var Collection<int, Member>
+     */
+    #[ORM\OneToMany(targetEntity: Member::class, mappedBy: 'club', orphanRemoval: true)]
+    private Collection $membersCollection;
+
+
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
+        $this->membersCollection = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -158,7 +170,72 @@ class Club
         return $this;
     }
 
-    public function addMember(User $user)
+
+
+
+
+
+
+    public function getJoinRequest(): ?array  // Return can be null
     {
+        return $this->joinRequest;
     }
+
+    public function setJoinRequest(?array $joinRequest): static  // Accepts null
+    {
+        $this->joinRequest = $joinRequest;
+        return $this;
+    }
+
+    public function addJoinRequest(array $requestData): self
+    {
+        $joinRequests = $this->getJoinRequest();
+        $joinRequests[] = $requestData;
+        $this->setJoinRequest($joinRequests);
+        return $this;
+    }
+
+    public function hasUserPendingRequest(User $user): bool
+    {
+        foreach ($this->getJoinRequest() as $request) {
+            if (($request['user_id'] ?? null) == $user->getId()
+                && ($request['status'] ?? null) === 'pending'
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return Collection<int, Member>
+     */
+    public function getMembersCollection(): Collection
+    {
+        return $this->membersCollection;
+    }
+
+    public function addMembersCollection(Member $membersCollection): static
+    {
+        if (!$this->membersCollection->contains($membersCollection)) {
+            $this->membersCollection->add($membersCollection);
+            $membersCollection->setClub($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMembersCollection(Member $membersCollection): static
+    {
+        if ($this->membersCollection->removeElement($membersCollection)) {
+            // set the owning side to null (unless already changed)
+            if ($membersCollection->getClub() === $this) {
+                $membersCollection->setClub(null);
+            }
+        }
+
+        return $this;
+    }
+
+    
 }

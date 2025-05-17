@@ -1,0 +1,44 @@
+<nav class="sidebar col-12 col-md-3 col-lg-2 p-3" style="background-color: #EEF2FF; height:100vh;">
+	<div class="sidebar-logo mb-4 px-3">
+		<a href="{{ path('app_home') }}">ClubSync</a>
+	</div>
+	<ul class="nav flex-column">
+		<li class="nav-item">
+			<a class="nav-link text-secondary" href="{{ path('app_dashboard') }}">
+				<i class="bi bi-house pe-2 fs-5"></i>
+				Dashboard
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link text-secondary" href="{{ path('app_club_index') }}">
+				<i class="bi bi-collection pe-2 fs-5"></i>
+				Clubs
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link text-secondary" href="{{ path('app_event_index') }}">
+				<i class="bi bi-calendar-event pe-2 fs-5"></i>
+				Events
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link text-secondary" href="{{ path('app_member_index') }}">
+				<i class="bi bi-people-fill pe-2 fs-5"></i>
+				Members
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link text-secondary" href="#">
+				<i class="bi bi-gear pe-2 fs-5"></i>
+				Settings
+			</a>
+		</li>
+
+		<li class="nav-item">
+			<a class="nav-link text-secondary" href="{{ path('app_logout')}}">
+				<i class="bi bi-box-arrow-left pe-2 fs-5"></i>
+				Logout
+			</a>
+		</li>
+	</ul>
+</nav>

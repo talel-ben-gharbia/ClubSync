@@ -5,32 +5,7 @@
 {% block body %}
 	<div class="container-fluid">
 		<div class="row">
-			<nav class="sidebar col-12 col-md-3 col-lg-2 p-3" style="background-color: #EEF2FF; height:100vh;">
-				<div class="sidebar-logo mb-4 px-3"><a  href="{{ path('app_home') }}">ClubSync</a></div>
-				<ul class="nav flex-column">
-					<li class="nav-item">
-						<a class="nav-link text-secondary" href="{{ path('app_dashboard') }}">
-							<i class="bi bi-house pe-2 fs-5"></i> Dashboard
-						</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link text-secondary" href="{{ path('app_club_index') }}">
-							<i class="bi bi-collection pe-2 fs-5"></i> Clubs
-						</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link text-secondary" href="{{ path('app_event_index') }}">
-							<i class="bi bi-calendar-event pe-2 fs-5"></i> Events
-						</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link text-secondary" href="#">
-							<i class="bi bi-gear pe-2 fs-5"></i> Settings
-						</a>
-					</li>
-
-				</ul>
-			</nav>
+			{% include "DashNavbar.html.twig" %}
 			<main class="col-12 col-md-9 col-lg-10 p-4">
 				<h1>Admin Dashboard</h1>
 				<p>Welcome to the admin dashboard. Use the sidebar to manage clubs and events.</p>

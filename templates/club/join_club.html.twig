@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Join
+	{{ club.name }}
+{% endblock %}
+
+{% block body %}
+	{% include "Navbar.html.twig" %}
+	<div class="container py-5">
+		<div class="row justify-content-center">
+			<div class="col-md-8 col-lg-6">
+				<div class="card shadow-sm">
+					<div class="card-header bg-primary text-white">
+						<h2 class="h4 mb-0 text-center">Join
+							{{ club.name }}</h2>
+					</div>
+
+					<div class="card-body">
+						{% for message in app.flashes('success') %}
+							<div class="alert alert-success alert-dismissible fade show">
+								{{ message }}
+								<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+							</div>
+						{% endfor %}
+						{% if hasPendingRequest %}
+							<div class="alert alert-warning">
+								You already have a pending request to join this club.
+							</div>
+						{% else %}
+							{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+							<div class="mb-3">
+								{{ form_label(form.username, null, {'label_attr': {'class': 'form-label'}}) }}
+								{{ form_widget(form.username, {'attr': {'class': 'form-control'}}) }}
+							</div>
+
+							<div class="mb-3">
+								{{ form_label(form.email, null, {'label_attr': {'class': 'form-label'}}) }}
+								{{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+							</div>
+
+							<div class="mb-3">
+								{{ form_label(form.department, null, {'label_attr': {'class': 'form-label'}}) }}
+								{{ form_widget(form.department, {'attr': {'class': 'form-select'}}) }}
+							</div>
+
+							<div class="mb-3">
+								{{ form_label(form.class, null, {'label_attr': {'class': 'form-label'}}) }}
+								{{ form_widget(form.class, {'attr': {'class': 'form-control'}}) }}
+								<div class="form-text">Format example: 3IT2</div>
+							</div>
+
+							<div class="mb-3">
+								{{ form_label(form.reason, null, {'label_attr': {'class': 'form-label'}}) }}
+								{{ form_widget(form.reason, {'attr': {'class': 'form-control', 'rows': 4}}) }}
+							</div>
+
+							<div class="d-grid gap-2">
+								{{ form_widget(form.submit, {'attr': {'class': 'btn btn-primary btn-lg'}}) }}
+							</div>
+
+							{{ form_end(form) }}
+                        {% endif %}
+						</div>
+
+						<div class="card-footer text-muted text-center">
+							<small>Your request will be reviewed by the club administrators</small>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endblock %}

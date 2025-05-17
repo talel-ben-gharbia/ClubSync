@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Subscribe to {{ event.name }}{% endblock %}
+
+{% block body %}
+    {% include 'Navbar.html.twig' %}
+ 
+    <div class="container py-5">
+        <h2 class="mb-4 text-center">Subscribe to "{{ event.name }}"</h2>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        {% for message in app.flashes('warning') %}
+            <div class="alert alert-warning">{{ message }}</div>
+        {% endfor %}
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                {{ form_start(form) }}
+                    <div class="mb-3">
+                        {{ form_label(form.username) }}
+                        {{ form_widget(form.username, { attr: { class: 'form-control' } }) }}
+                        {{ form_errors(form.username) }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_label(form.email) }}
+                        {{ form_widget(form.email, { attr: { class: 'form-control' } }) }}
+                        {{ form_errors(form.email) }}
+                    </div>
+                    <div class="text-center">
+                        {{ form_widget(form.submit, { attr: { class: 'btn btn-primary' } }) }}
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+
+        {% if isMemberOfClub %}
+            <p class="text-center mt-4 text-success">You are a member of the club organizing this event.</p>
+        {% else %}
+            <p class="text-center mt-4 text-muted">You are not a member of the club organizing this event.</p>
+        {% endif %}
+    </div>
+{% endblock %}

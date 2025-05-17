@@ -1,35 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Club{% endblock %}
+{% block title %}Edit Club
+{% endblock %}
 
 {% block body %}
 	<div class="container-fluid">
 		<div class="row">
-			<nav class="sidebar col-12 col-md-3 col-lg-2 p-3" style="background-color: #EEF2FF; height:100vh;">
-				<div class="sidebar-logo mb-4 px-3">ClubHub</div>
-				<ul class="nav flex-column">
-					<li class="nav-item">
-						<a class="nav-link text-secondary" href="{{ path('app_dashboard') }}">
-							<i class="bi bi-house pe-2 fs-5"></i> Dashboard
-						</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_club' ? 'bg-light text-primary border-end border-primary' : 'text-secondary' }}" href="{{ path('app_club_index') }}">
-							<i class="bi bi-collection pe-2 fs-5"></i> Clubs
-						</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link text-secondary" href="{{ path('app_event_index') }}">
-							<i class="bi bi-calendar-event pe-2 fs-5"></i> Events
-						</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link text-secondary" href="#">
-							<i class="bi bi-gear pe-2 fs-5"></i> Settings
-						</a>
-					</li>
-				</ul>
-			</nav>
+			{% include "DashNavbar.html.twig" %}
 			<main class="col-12 col-md-9 col-lg-10 p-4">
 				<div class="d-flex justify-content-between align-items-center mb-4">
 					<h1>Edit Club</h1>

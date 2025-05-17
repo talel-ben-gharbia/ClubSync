@@ -47,6 +47,10 @@ class Event
     #[ORM\JoinColumn(nullable: false)]
     private ?Club $club = null;
 
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $subscriber = null;
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -159,6 +163,18 @@ class Event
     public function setClub(?Club $club): static
     {
         $this->club = $club;
+        return $this;
+    }
+
+    public function getSubscriber(): array
+    {
+        return $this->subscriber ?? [];
+    }
+
+    public function setSubscriber(array $subscriber): static
+    {
+        $this->subscriber = $subscriber;
+
         return $this;
     }
 }
