@@ -1,41 +1,56 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Tableau de bord{% endblock %}
+{% block title %}Admin Dashboard{% endblock %}
 
 {% block stylesheets %}
 	{{ parent() }}
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	<style>
-		.chart-container {
-			width: 100%;
-			height: 400px;
-			margin-bottom: 30px;
-			border: 1px solid #e0e0e0;
-			border-radius: 10px;
-			padding: 15px;
-			background: white;
-			box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-		}
 		.stat-card {
 			border-radius: 10px;
 			padding: 20px;
 			margin-bottom: 20px;
 			color: white;
 			text-align: center;
-			box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-			transition: transform 0.2s ease-in-out;
+			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+			transition: transform 0.3s ease;
 		}
 		.stat-card:hover {
 			transform: translateY(-5px);
 		}
 		.stat-card h3 {
-			font-size: 1.5rem;
+			font-size: 1.2rem;
 			margin-bottom: 10px;
+			font-weight: 600;
 		}
 		.stat-card p {
-			font-size: 2.5rem;
+			font-size: 2rem;
 			font-weight: bold;
 			margin: 0;
+		}
+		.stat-card i {
+			font-size: 2rem;
+			margin-bottom: 15px;
+		}
+		.chart-container {
+			background: white;
+			border-radius: 10px;
+			padding: 20px;
+			margin-bottom: 20px;
+			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+			height: 350px;
+		}
+		.chart-container h3 {
+			margin-top: 0;
+			margin-bottom: 15px;
+			font-size: 1.2rem;
+			font-weight: 600;
+			color: #333;
+		}
+		@media (max-width: 768px) {
+			.chart-container {
+				height: 300px;
+			}
 		}
 	</style>
 {% endblock %}
@@ -45,54 +60,71 @@
 		<div class="row">
 			{% include "DashNavbar.html.twig" %}
 			<main class="col-12 col-md-9 col-lg-10 p-4">
-				<div class="card mb-4">
-					<div class="card-body">
-						<h1 class="card-title">Tableau de bord</h1>
-						<p class="card-text">Bienvenue dans le tableau de bord admin. Utilisez la barre latérale pour gérer les clubs et événements.</p>
-					</div>
+				<div class="d-flex justify-content-between align-items-center mb-4">
+					<h1>Admin Dashboard</h1>
+					<span class="text-muted">Welcome back, {{ app.user.username }}</span>
 				</div>
 
+				<!-- Stats Cards -->
 				<div class="row mb-4">
-					<div class="col-md-4">
+					<div class="col-md-3 col-sm-6">
 						<div class="stat-card bg-primary">
-							<h3>Clubs</h3>
+							<i class="bi bi-collection"></i>
+							<h3>Total Clubs</h3>
 							<p>{{ totalClubs }}</p>
 						</div>
 					</div>
-					<div class="col-md-4">
+					<div class="col-md-3 col-sm-6">
 						<div class="stat-card bg-success">
-							<h3>Événements</h3>
+							<i class="bi bi-calendar-event"></i>
+							<h3>Total Events</h3>
 							<p>{{ totalEvents }}</p>
 						</div>
 					</div>
-					<div class="col-md-4">
+					<div class="col-md-3 col-sm-6">
 						<div class="stat-card bg-info">
-							<h3>Membres</h3>
+							<i class="bi bi-people-fill"></i>
+							<h3>Club Members</h3>
 							<p>{{ totalMembers }}</p>
 						</div>
 					</div>
-				</div>
-
-				<div class="row">
-					<div class="col-md-6">
-						<div class="chart-container">
-							<h3>Statut des clubs</h3>
-							<div id="clubStatusChart"></div>
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="chart-container">
-							<h3>Statut des événements</h3>
-							<div id="eventStatusChart"></div>
+					<div class="col-md-3 col-sm-6">
+						<div class="stat-card bg-warning">
+							<i class="bi bi-person-fill"></i>
+							<h3>Registered Users</h3>
+							<p>{{ totalUsers }}</p>
 						</div>
 					</div>
 				</div>
 
+				<!-- Charts Row 1 -->
 				<div class="row">
-					<div class="col-md-12">
+					<div class="col-md-6">
 						<div class="chart-container">
-							<h3>Clubs les plus populaires</h3>
-							<div id="popularClubsChart"></div>
+							<h3>Club Status Distribution</h3>
+							<div id="clubStatusChart" style="width: 100%; height: 100%;"></div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="chart-container">
+							<h3>Event Status Distribution</h3>
+							<div id="eventStatusChart" style="width: 100%; height: 100%;"></div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Charts Row 2 -->
+				<div class="row">
+					<div class="col-md-6">
+						<div class="chart-container">
+							<h3>Most Popular Clubs</h3>
+							<div id="popularClubsChart" style="width: 100%; height: 100%;"></div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="chart-container">
+							<h3>Events by Month</h3>
+							<div id="monthlyEventsChart" style="width: 100%; height: 100%;"></div>
 						</div>
 					</div>
 				</div>
@@ -108,49 +140,65 @@
 		google.charts.setOnLoadCallback(drawCharts);
 
 		function drawCharts() {
+			// Parse the data from the controller
 			var clubStatusData = google.visualization.arrayToDataTable({{ clubStatusData|raw }});
 			var eventStatusData = google.visualization.arrayToDataTable({{ eventStatusData|raw }});
 			var popularClubsData = google.visualization.arrayToDataTable({{ popularClubsData|raw }});
+			var monthlyEventsData = google.visualization.arrayToDataTable({{ monthlyEventsData|raw }});
 
+			// Club Status Pie Chart
 			var clubStatusOptions = {
-				title: 'Répartition des clubs',
 				pieHole: 0.4,
-				colors: ['#28a745', '#dc3545'],
-				animation: { duration: 1000, easing: 'out', startup: true },
-				titleTextStyle: { color: '#333', fontSize: 18, bold: true }
+				colors: ['#0d6efd', '#dc3545'],
+				legend: { position: 'bottom' },
+				chartArea: { width: '90%', height: '80%' },
+				animation: { duration: 1000, easing: 'out', startup: true }
 			};
-
-			var eventStatusOptions = {
-				title: 'Statut des événements',
-				pieHole: 0.4,
-				colors: ['#17a2b8', '#ffc107', '#6c757d'],
-				animation: { duration: 1000, easing: 'out', startup: true },
-				titleTextStyle: { color: '#333', fontSize: 18, bold: true }
-			};
-
-			var popularClubsOptions = {
-				title: 'Top 5 des clubs',
-				legend: { position: 'none' },
-				colors: ['#007bff'],
-				hAxis: { title: 'Clubs' },
-				vAxis: { title: 'Nombre de membres' },
-				animation: { duration: 1000, easing: 'out', startup: true },
-				titleTextStyle: { color: '#333', fontSize: 18, bold: true }
-			};
-
 			var clubStatusChart = new google.visualization.PieChart(document.getElementById('clubStatusChart'));
 			clubStatusChart.draw(clubStatusData, clubStatusOptions);
 
+			// Event Status Pie Chart
+			var eventStatusOptions = {
+				pieHole: 0.4,
+				colors: ['#0d6efd', '#198754', '#6c757d'],
+				legend: { position: 'bottom' },
+				chartArea: { width: '90%', height: '80%' },
+				animation: { duration: 1000, easing: 'out', startup: true }
+			};
 			var eventStatusChart = new google.visualization.PieChart(document.getElementById('eventStatusChart'));
 			eventStatusChart.draw(eventStatusData, eventStatusOptions);
 
-			var popularClubsChart = new google.visualization.ColumnChart(document.getElementById('popularClubsChart'));
+			// Popular Clubs Bar Chart
+			var popularClubsOptions = {
+				bars: 'horizontal',
+				colors: ['#0d6efd'],
+				legend: { position: 'none' },
+				chartArea: { width: '70%', height: '80%' },
+				hAxis: { minValue: 0 },
+				animation: { duration: 1000, easing: 'out', startup: true }
+			};
+			var popularClubsChart = new google.visualization.BarChart(document.getElementById('popularClubsChart'));
 			popularClubsChart.draw(popularClubsData, popularClubsOptions);
 
-			window.addEventListener('resize', function () {
+			// Monthly Events Line Chart
+			var monthlyEventsOptions = {
+				curveType: 'function',
+				colors: ['#0d6efd'],
+				legend: { position: 'none' },
+				chartArea: { width: '80%', height: '80%' },
+				hAxis: { title: 'Month' },
+				vAxis: { title: 'Number of Events', minValue: 0 },
+				animation: { duration: 1000, easing: 'out', startup: true }
+			};
+			var monthlyEventsChart = new google.visualization.LineChart(document.getElementById('monthlyEventsChart'));
+			monthlyEventsChart.draw(monthlyEventsData, monthlyEventsOptions);
+
+			// Make charts responsive
+			window.addEventListener('resize', function() {
 				clubStatusChart.draw(clubStatusData, clubStatusOptions);
 				eventStatusChart.draw(eventStatusData, eventStatusOptions);
 				popularClubsChart.draw(popularClubsData, popularClubsOptions);
+				monthlyEventsChart.draw(monthlyEventsData, monthlyEventsOptions);
 			});
 		}
 	</script>

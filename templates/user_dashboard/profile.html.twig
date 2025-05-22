@@ -1,0 +1,224 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block body %}
+    {% include "Navbar.html.twig" %}
+
+    <div class="container py-4">
+        <div class="row g-4">
+            <!-- Sidebar -->
+            <div class="col-md-3" data-aos="fade-right">
+                <div class="sidebar-nav">
+                    <div class="text-center mb-4">
+                        <div class="mb-3">
+                            <div class="avatar-circle mx-auto">
+                                <i class="bi bi-person-circle" style="font-size: 3rem;"></i>
+                            </div>
+                        </div>
+                        <h5 class="mb-1">{{ user.username }}</h5>
+                        <p class="text-muted mb-0">{{ user.email }}</p>
+                    </div>
+                    <div class="nav flex-column">
+                        <a href="{{ path('app_user_dashboard') }}" class="nav-link">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                        <a href="{{ path('app_user_dashboard_profile') }}" class="nav-link active">
+                            <i class="bi bi-person"></i> My Profile
+                        </a>
+                        <a href="{{ path('app_user_dashboard_change_password') }}" class="nav-link">
+                            <i class="bi bi-key"></i> Change Password
+                        </a>
+                        <a href="{{ path('app_logout') }}" class="nav-link text-danger">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <div class="dashboard-card" data-aos="fade-up">
+                    <div class="dashboard-card-header">
+                        <h1 class="h3 mb-0"><i class="bi bi-person me-2"></i>My Profile</h1>
+                    </div>
+                </div>
+
+                <!-- Flash Messages -->
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }} alert-dismissible fade show animate-fade-in">
+                            {% if label == 'success' %}<i class="bi bi-check-circle me-2"></i>{% endif %}
+                            {% if label == 'danger' %}<i class="bi bi-exclamation-triangle me-2"></i>{% endif %}
+                            {% if label == 'warning' %}<i class="bi bi-exclamation-circle me-2"></i>{% endif %}
+                            {% if label == 'info' %}<i class="bi bi-info-circle me-2"></i>{% endif %}
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+
+                <div class="row g-4">
+                    <!-- Profile Form -->
+                    <div class="col-md-8" data-aos="fade-up" data-aos-delay="100">
+                        <div class="dashboard-card h-100">
+                            <div class="dashboard-card-header">
+                                <h2 class="h5 mb-0"><i class="bi bi-pencil me-2"></i>Edit Profile</h2>
+                            </div>
+                            <div class="dashboard-card-body">
+                                <div class="text-center mb-4">
+                                    <div class="avatar-circle mx-auto mb-3" style="width: 100px; height: 100px;">
+                                        <i class="bi bi-person-circle" style="font-size: 4rem;"></i>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-camera me-1"></i>Change Avatar
+                                    </button>
+                                </div>
+
+                                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                                <div class="mb-3">
+                                    {{ form_label(form.username, 'Username', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.username, {'attr': {'class': 'form-control form-control-lg'}}) }}
+                                    {{ form_errors(form.username) }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ form_label(form.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+                                    {{ form_widget(form.email, {'attr': {'class': 'form-control form-control-lg'}}) }}
+                                    {{ form_errors(form.email) }}
+                                </div>
+                                <div class="d-grid gap-2 mt-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-check-lg me-2"></i>Save Changes
+                                    </button>
+                                </div>
+                                {{ form_end(form) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Information -->
+                    <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                        <div class="dashboard-card h-100">
+                            <div class="dashboard-card-header">
+                                <h2 class="h5 mb-0"><i class="bi bi-info-circle me-2"></i>Account Information</h2>
+                            </div>
+                            <div class="dashboard-card-body">
+                                <div class="mb-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="icon-circle bg-primary bg-opacity-10 me-3">
+                                            <i class="bi bi-person text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-muted small">Account Type</div>
+                                            <div class="fw-bold">
+                                                {% if attribute(user, 'club') is defined %}
+                                                    <span class="badge bg-success">Club Member</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Regular User</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {% if attribute(user, 'club') is defined %}
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="icon-circle bg-info bg-opacity-10 me-3">
+                                                <i class="bi bi-people text-info"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-muted small">Club</div>
+                                                <div class="fw-bold">{{ user.club.name }}</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="icon-circle bg-primary bg-opacity-10 me-3">
+                                                <i class="bi bi-award text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-muted small">Role</div>
+                                                <div class="fw-bold">
+                                                    {% if user.clubRole == 'manager' %}
+                                                        <span class="badge bg-primary">Manager</span>
+                                                    {% else %}
+                                                        <span class="badge bg-info">Member</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="icon-circle bg-success bg-opacity-10 me-3">
+                                                <i class="bi bi-calendar-check text-success"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-muted small">Joined On</div>
+                                                <div class="fw-bold">{{ user.joinAt|date('F d, Y') }}</div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-circle bg-secondary bg-opacity-10 me-3">
+                                            <i class="bi bi-shield-check text-secondary"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-muted small">Account ID</div>
+                                            <div class="fw-bold">{{ user.id ? '#' ~ user.id : 'N/A' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid gap-2 mt-4">
+                                    <a href="{{ path('app_user_dashboard_change_password') }}" class="btn btn-outline-primary">
+                                        <i class="bi bi-key me-2"></i>Change Password
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-white mt-5 py-4 border-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-0 text-muted">&copy; {{ "now"|date("Y") }} ClubSync. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="text-muted me-3"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-muted me-3"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="text-muted me-3"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="text-muted"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            background-color: var(--light-gray);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .icon-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+    </style>
+{% endblock %}
